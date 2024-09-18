@@ -20,6 +20,7 @@
 #include <cstdarg>
 #include <obs-module.h>
 #include <Windows.h>
+//#include "../util/uihook_log.hpp"
 
 namespace uiohook {
 /*
@@ -91,6 +92,7 @@ void stop()
     CloseHandle(hook_running_mutex);
     CloseHandle(hook_control_mutex);
     CloseHandle(hook_control_cond);
+    //uihook_log::shutdown();
 }
 
 int hook_enable()
@@ -156,6 +158,7 @@ void start()
     hook_running_mutex = CreateMutex(nullptr, FALSE, TEXT("hook_running_mutex"));
     hook_control_mutex = CreateMutex(nullptr, FALSE, TEXT("hook_control_mutex"));
     hook_control_cond = CreateEvent(nullptr, TRUE, FALSE, TEXT("hook_control_cond"));
+    //uihook_log::initialize("C:/Users/Tariq/Desktop/log_file_test.txt");
 
     /* Set the logger callback for library output. */
     hook_set_logger_proc(&logger_proc, nullptr);

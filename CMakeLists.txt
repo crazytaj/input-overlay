@@ -184,7 +184,10 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         src/util/input_filter.hpp
         src/util/log.h
         src/util/settings.h
-        src/util/lang.h src/network/websocket_server.hpp
+        src/util/lang.h
+        src/util/uihook_log.hpp
+        src/util/uihook_log.cpp
+        src/network/websocket_server.hpp
         src/network/websocket_server.cpp
         src/gui/io_settings_dialog.ui
         ${input-overlay_PLATFORM_SOURCES}

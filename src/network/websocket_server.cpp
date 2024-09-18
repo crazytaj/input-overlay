@@ -3,6 +3,7 @@
 #include "../util/settings.h"
 #include "../util/obs_util.hpp"
 #include "../util/log.h"
+//#include "../util/uihook_log.hpp"
 #include "mg.hpp"
 #include <input_data.hpp>
 #include <QJsonObject>
@@ -23,6 +24,7 @@ bool start()
     if (result) {
         binfo("Starting websocket server on localhost:%li", port);
         state = true;
+        //uihook_log::initialize("C:/Users/Tariq/Desktop/log_file_test.txt");
     }
     return result;
 }
@@ -30,6 +32,7 @@ bool start()
 void stop()
 {
     mg::stop();
+    //uihook_log::shutdown();
     state = false;
 }
 
@@ -111,6 +114,7 @@ void dispatch_uiohook_event(const uiohook_event *e, const std::string &source_na
 {
     std::lock_guard<std::mutex> lock(mg::poll_mutex);
     if (mg::can_queue_message())
+        //uihook_log::log_uihook_event(e); // New logging function call
         mg::queue_message(qt_to_utf8(serialize_uiohook(e, source_name)));
 }
 

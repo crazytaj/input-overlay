@@ -24,6 +24,7 @@
 #include <uiohook.h>
 #include <util/platform.h>
 #define SCROLL_TIMEOUT 120000000
+#include "../util/uihook_log.hpp"
 
 namespace uiohook {
 extern uint64_t last_scroll_time;
@@ -51,6 +52,7 @@ inline void process_event(uiohook_event *event)
     thread_data.dispatch_uiohook_event(event);
     if (is_important || (diff >= refresh_ms && local_data::data.last_event < thread_data.last_event)) {
         last_time = event->time;
+        uihook_log::log_uihook_event(event); // New logging function call
         std::lock_guard<std::mutex> lock(local_data::data.m_mutex);
         local_data::data.copy(&thread_data);
     }

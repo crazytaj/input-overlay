@@ -33,6 +33,7 @@
 #include "util/config.hpp"
 #include "util/log.h"
 #include "util/lang.h"
+#include "util/uihook_log.hpp"
 #include "plugin-macros.generated.h"
 
 #ifdef LINUX
@@ -43,6 +44,44 @@ extern void cleanupDisplay();
 
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("input-overlay", "en-US")
+
+static void obs_frontend_event(enum obs_frontend_event event, void *private_data)
+
+{
+
+    switch (event) {
+
+    case OBS_FRONTEND_EVENT_RECORDING_STARTED: {
+
+        obs_output_t *recording_output = obs_frontend_get_recording_output();
+
+        obs_data_t *settings = obs_output_get_settings(recording_output);
+
+        const char *path = obs_data_get_string(settings, "path");
+
+        if (path) {
+
+            uihook_log::start_logging(path);
+
+        } else {
+
+            blog(LOG_WARNING, "[input-overlay] Could not get recording path");
+        }
+
+        obs_data_release(settings);
+
+        obs_output_release(recording_output);
+
+        break;
+    }
+
+    case OBS_FRONTEND_EVENT_RECORDING_STOPPED:
+
+        uihook_log::stop_logging();
+
+        break;
+    }
+}
 
 bool obs_module_load()
 {
@@ -79,6 +118,7 @@ bool obs_module_load()
         const auto menu_cb = [] { settings_dialog->toggleShowHide(); };
         QAction::connect(menu_action, &QAction::triggered, menu_cb);
     });
+    obs_frontend_add_event_callback(obs_frontend_event, nullptr);
     return true;
 }
 
@@ -88,6 +128,7 @@ void obs_module_unload()
     io_config::save();
 
     gamepad_hook::stop();
+    uihook_log::shutdown();
     uiohook::stop();
     wss::stop();
 

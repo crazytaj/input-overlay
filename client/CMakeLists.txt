@@ -198,7 +198,9 @@ set(io_client_SOURCES
     src/gamepad_helper.cpp
     src/gamepad_helper.hpp
     src/uiohook_helper.cpp
-    src/uiohook_helper.hpp)
+    src/uiohook_helper.hpp
+    src/hid_event_log.hpp
+    src/hid_event_log.cpp)
 
 add_executable(${PROJECT_NAME} ${io_client_SOURCES})
 

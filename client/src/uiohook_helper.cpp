@@ -21,6 +21,7 @@
 #include <cstdarg>
 #include <cstdio>
 #include <util.hpp>
+#include "hid_event_log.hpp"
 
 namespace uiohook_helper {
 std::atomic<bool> hook_state;
@@ -59,6 +60,7 @@ void dispatch_proc(uiohook_event *const event, void *)
     case EVENT_MOUSE_PRESSED:
     case EVENT_MOUSE_RELEASED:
         if (util::cfg.monitor_mouse) {
+            log_mouse_event_thread_safe(*event);
             std::lock_guard<std::mutex> lock(queue.mutex);
             queue.events.emplace_back(*event);
         }
@@ -72,6 +74,7 @@ void dispatch_proc(uiohook_event *const event, void *)
     case EVENT_MOUSE_MOVED:
     case EVENT_MOUSE_DRAGGED:
         if (util::cfg.monitor_mouse) {
+            log_mouse_event_thread_safe(*event);
             std::lock_guard<std::mutex> lock(queue.mutex);
             queue.events.emplace_back(*event);
         }
